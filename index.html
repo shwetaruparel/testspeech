@@ -1,157 +1,37 @@
-    <!DOCTYPE html>
-
-    <html>
-
-    <head>
-
-        <title>Web Audio API - iPad Test</title>
-
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-        <style>
-
-            section { padding:10px; margin:0 0 10px; background:DarkSeaGreen }
-
-            a { cursor:pointer; display:block; background: DarkSeaGreen; padding:10px; margin:0 0 3px }
-
-        </style>
-
-    </head>
-
-    <body>
-
-        <script>
-
-            var app = {};
-
-            $(document).ready(function() {
-                // Do we have Web Audio API?
-
-                try {
-                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-
-                    audioContext = new AudioContext();
-
-                } catch (e) {
-                    alert('Web Audio API is not supported in this browser');
-
-                }
-
-                $('#loadClick').on('click',function(){load('./ipad_test.mp3')});
-
-                $('#playTouchEnd').on('touchend',play);
-
-                $('#playTouchStart').on('touchstart',play);
-
-                $('#playClick').on('click',play);
-
-                $('#unlockTouchEnd').on('touchend',unlock);
-
-                $('#unlockTouchStart').on('touchstart',unlock);
-
-                $('#unlockClick').on('click',unlock);
-
-            });
-
-            function unlock() {
-                // play empty buffer to unmute audio
-
-                var buffer = audioContext.createBuffer(1, 1, 22050);
-
-                var source = audioContext.createBufferSource();
-
-                source.audioContext = buffer;
-
-                source.connect(audioContext.destination);
-
-                source.start(0);
-
-                $('#messages').append('<p>Unlocked.</p>');
-
-            }
-
-            function load(file) {
-                if(app.loaded) {
-                    $('#messages').append('<p>Already loaded.</p>');
-
-                    return;
-
-                }
-
-                var request = new XMLHttpRequest();
-
-                request.open ('GET', file, true);
-
-                request.responseType = 'arraybuffer';
-
-                request.onload = function () {
-                    audioContext.decodeAudioData(
-
-                            request.response,
-
-                            function (buffer) {
-                                app.buffer = buffer;
-
-                                $('#messages').append('<p>Loaded.</p>');
-
-                                app.loaded = 1;
-
-                            },
-
-                            function(){alert('Load error.');}
-
-                    )
-
-                };
-
-                request.send();
-
-            }
-
-            function play() {
-                if(!app.loaded) {
-                    $('#messages').append('<p>Please load before playing.</p>');
-
-                    return;
-
-                }
-
-                var sourceNode = audioContext.createBufferSource();
-
-                sourceNode.buffer = app.buffer;
-
-                sourceNode.connect (audioContext.destination);
-
-                sourceNode.start(0);
-
-                $('#messages').append('<p>Playing.</p>');
-
-            }
-
-        </script>
-
-        <h1>Web Audio API Test</h1>
-
-        <p>Unlock should not be needed at all, but offers an alternative way to try and get the audio going. Load and then play should be all any compatible device needs. Refresh to start again.</p>
-
-        <a id="unlockTouchEnd">Unlock (touchend)</a>
-
-        <a id="unlockTouchStart">Unlock (touchstart)</a>
-
-        <a id="unlockClick">Unlock (click)</a>
-
-        <a id="loadClick" style="background:#c0c0c0">Load (click)</a>
-
-        <a id="playTouchEnd">Play Audio (touchend)</a>
-
-        <a id="playTouchStart">Play Audio (touchstart)</a>
-
-        <a id="playClick">Play Audio (click)</a>
-
-        <section id="messages"></section>
-
-    </body>
-
-    </html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+
+<script>
+var msg = new SpeechSynthesisUtterance();
+var voices = window.speechSynthesis.getVoices();
+function checkSpeak()
+{
+	msg.voice = voices[10]; // Note: some voices don't support altering params
+	msg.voiceURI = 'native';
+	msg.volume = 1; // 0 to 1
+	msg.rate = 1; // 0.1 to 10
+	msg.pitch = 2; //0 to 2
+	msg.text = 'Hello World';
+	msg.lang = 'en-US';
+	msg.onstart =function(e) {
+		console.log('Started well in ' + event.elapsedTime + ' seconds.');
+	};
+	msg.onend = function(e) {
+	  console.log('Finished in ' + event.elapsedTime + ' seconds.');
+	};
+	msg.onerror = function(e)
+	{
+		console.log("There seems to be an error"+event.error);
+	};
+}
+speechSynthesis.speak(msg);
+</script>
+<body>
+<a href="#" onclick='checkSpeak()'>Speak</a>
+</body>
+</html>
