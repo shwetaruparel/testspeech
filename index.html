@@ -9,23 +9,77 @@
 <script>
 var msg = new SpeechSynthesisUtterance();
 //var voices = window.speechSynthesis.getVoices();
+ var hasWindow = typeof window === "object" && window !== null && window.self === window && window.navigator !== null
+ var bIsiOS = hasWindow && /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream
+ console.log("I got some info about the hood"+hasWindow +" check if IOS"+bIsiOS);
+ 
+ var iOSVoiceNames = [
+    "Maged",
+    "Zuzana",
+    "Sara",
+    "Anna",
+    "Melina",
+    "Karen",
+    "Samantha",
+    "Daniel",
+    "Rishi",
+    "Moira",
+    "Tessa",
+    "Mónica",
+    "Paulina",
+    "Satu",
+    "Amélie",
+    "Thomas",
+    "Carmit",
+    "Lekha",
+    "Mariska",
+    "Damayanti",
+    "Alice",
+    "Kyoko",
+    "Yuna",
+    "Ellen",
+    "Xander",
+    "Nora",
+    "Zosia",
+    "Luciana",
+    "Joana",
+    "Ioana",
+    "Milena",
+    "Laura",
+    "Alva",
+    "Kanya",
+    "Yelda",
+    "Tian-Tian",
+    "Sin-Ji",
+    "Mei-Jia"
+  ]
+  var voices = speechSynthesis.getVoices()
+  if (bIsiOS) {
+    let iOSVoices = []
+    for (var i = 0; i < voices.length; ++i) {
+      if (iOSVoiceNames.includes(voices[i].name))
+        iOSVoices.push(voices[i])
+      }
+    voices = iOSVoices
+	}
 function checkSpeak()
 {
 	console.log("These are the supported voices" );
-	//msg.voice = voices[10]; // Note: some voices don't support altering params
-	msg.voiceURI = 'native';
+	if(bIsiOS)
+		msg.voice = voices[6]; // Note: some voices don"t support altering params
+	msg.voiceURI = "native";
 	msg.volume = 1; // 0 to 1
 	msg.rate = 1; // 0.1 to 10
 	msg.pitch = 2; //0 to 2
-	msg.text = 'Hello World';
-	msg.lang = 'en-US';
+	msg.text = "Hello World";
+	msg.lang = "en-US";
 	speechSynthesis.speak(msg);
 
 	msg.onstart =function(e) {
-		console.log('Started well in ' + event.elapsedTime + ' seconds.');
+		console.log("Started well in " + event.elapsedTime + " seconds."+"The Voice is "+voices[6]);
 	};
 	msg.onend = function(e) {
-	  console.log('Finished in ' + event.elapsedTime + ' seconds.');
+	  console.log("Finished in " + event.elapsedTime + " seconds.");
 	};
 	msg.onerror = function(e)
 	{
@@ -34,6 +88,6 @@ function checkSpeak()
 }
 </script>
 <body>
-<a href="#" onclick='checkSpeak()'>Speak</a>
+<a href="#" onclick="checkSpeak()">Speak</a>
 </body>
 </html>
