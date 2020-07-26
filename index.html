@@ -1,76 +1,157 @@
-  
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Browser speech recognition</title>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <header>
-      <h1>Browser speech recognition</h1>
-    </header>
-    <main>
-      <button id="button">Start listening</button>
-      <div id="result"></div>
-      <p id="message" hidden aria-hidden="true">
-        Your browser doesn't support Speech Recognition. Sorry.
-      </p>
-    </main>
-    <footer>
-      <p>Built with 🎙 by <a href="https://twitter.com/philnash">philnash</a></p>
-    </footer>
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const button = document.getElementById("button");
-        const result = document.getElementById("result");
-        const main = document.getElementsByTagName("main")[0];
-        let listening = false;
-        const SpeechRecognition =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (typeof SpeechRecognition !== "undefined") {
-          const recognition = new SpeechRecognition();
+    <!DOCTYPE html>
 
-          const stop = () => {
-            main.classList.remove("speaking");
-            recognition.stop();
-            button.textContent = "Start listening";
-          };
+    <html>
 
-          const start = () => {
-            main.classList.add("speaking");
-            recognition.start();
-            button.textContent = "Stop listening";
-          };
+    <head>
 
-          const onResult = event => {
-            result.innerHTML = "";
-            for (const res of event.results) {
-              const text = document.createTextNode(res[0].transcript);
-              const p = document.createElement("p");
-              if (res.isFinal) {
-                p.classList.add("final");
-              }
-              p.appendChild(text);
-              result.appendChild(p);
+        <title>Web Audio API - iPad Test</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <style>
+
+            section { padding:10px; margin:0 0 10px; background:DarkSeaGreen }
+
+            a { cursor:pointer; display:block; background: DarkSeaGreen; padding:10px; margin:0 0 3px }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <script>
+
+            var app = {};
+
+            $(document).ready(function() {
+                // Do we have Web Audio API?
+
+                try {
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+                    audioContext = new AudioContext();
+
+                } catch (e) {
+                    alert('Web Audio API is not supported in this browser');
+
+                }
+
+                $('#loadClick').on('click',function(){load('./ipad_test.mp3')});
+
+                $('#playTouchEnd').on('touchend',play);
+
+                $('#playTouchStart').on('touchstart',play);
+
+                $('#playClick').on('click',play);
+
+                $('#unlockTouchEnd').on('touchend',unlock);
+
+                $('#unlockTouchStart').on('touchstart',unlock);
+
+                $('#unlockClick').on('click',unlock);
+
+            });
+
+            function unlock() {
+                // play empty buffer to unmute audio
+
+                var buffer = audioContext.createBuffer(1, 1, 22050);
+
+                var source = audioContext.createBufferSource();
+
+                source.audioContext = buffer;
+
+                source.connect(audioContext.destination);
+
+                source.start(0);
+
+                $('#messages').append('<p>Unlocked.</p>');
+
             }
-          };
-          recognition.continuous = true;
-          recognition.interimResults = true;
-          recognition.addEventListener("result", onResult);
-          button.addEventListener("click", event => {
-            listening ? stop() : start();
-            listening = !listening;
-          });
-        } else {
-          button.remove();
-          const message = document.getElementById("message");
-          message.removeAttribute("hidden");
-          message.setAttribute("aria-hidden", "false");
-        }
-      });
-    </script>
-  </body>
-</html>
+
+            function load(file) {
+                if(app.loaded) {
+                    $('#messages').append('<p>Already loaded.</p>');
+
+                    return;
+
+                }
+
+                var request = new XMLHttpRequest();
+
+                request.open ('GET', file, true);
+
+                request.responseType = 'arraybuffer';
+
+                request.onload = function () {
+                    audioContext.decodeAudioData(
+
+                            request.response,
+
+                            function (buffer) {
+                                app.buffer = buffer;
+
+                                $('#messages').append('<p>Loaded.</p>');
+
+                                app.loaded = 1;
+
+                            },
+
+                            function(){alert('Load error.');}
+
+                    )
+
+                };
+
+                request.send();
+
+            }
+
+            function play() {
+                if(!app.loaded) {
+                    $('#messages').append('<p>Please load before playing.</p>');
+
+                    return;
+
+                }
+
+                var sourceNode = audioContext.createBufferSource();
+
+                sourceNode.buffer = app.buffer;
+
+                sourceNode.connect (audioContext.destination);
+
+                sourceNode.start(0);
+
+                $('#messages').append('<p>Playing.</p>');
+
+            }
+
+        </script>
+
+        <h1>Web Audio API Test</h1>
+
+        <p>Unlock should not be needed at all, but offers an alternative way to try and get the audio going. Load and then play should be all any compatible device needs. Refresh to start again.</p>
+
+        <a id="unlockTouchEnd">Unlock (touchend)</a>
+
+        <a id="unlockTouchStart">Unlock (touchstart)</a>
+
+        <a id="unlockClick">Unlock (click)</a>
+
+        <a id="loadClick" style="background:#c0c0c0">Load (click)</a>
+
+        <a id="playTouchEnd">Play Audio (touchend)</a>
+
+        <a id="playTouchStart">Play Audio (touchstart)</a>
+
+        <a id="playClick">Play Audio (click)</a>
+
+        <section id="messages"></section>
+
+    </body>
+
+    </html>
