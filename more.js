@@ -28,7 +28,7 @@ function onMediaSuccess(stream) {
 		stream.oninactive = function() {
 			console.log('Stream ended');
 			window.stream = stream; // make variable available to browser console
-			audio.srcObject = stream;
+			//audio.srcObject = stream;
             mediaRecorder.stop();
 
 		};
@@ -44,7 +44,7 @@ function onMediaSuccess(stream) {
 }
 
 function onMediaError(e) {
-    console.error('media error', e);
+    console.log('media error', e);
 }
 
 function onStop() {
@@ -72,9 +72,12 @@ function stopContadorIncremento() {
 $(function() {
 
     $(".play").on("click", function() {
+		console.log("I clicked on play");
         navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+		console.log(" I am trtying to update the result");
         contadorIncremento();
 		$("#recorder").click()
+		console.log("finally I clicked the recorder");
 
     });
 
