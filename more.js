@@ -8,10 +8,29 @@ var voices = speechSynthesis.getVoices();
 
 var mediaRecorder;
 var blobURL;
-
+alert('Your browser version is reported as ' + navigator.appVersion);
 const recorder = document.getElementById('recorder');
 //const player = document.getElementById('player');
+if (navigator.mediaDevices === undefined) {
+	console.log("seems to be new browser");
+  navigator.mediaDevices = {};
+}
+if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+  console.log("enumerateDevices() not supported.");
+}
 
+// List cameras and microphones.
+
+navigator.mediaDevices.enumerateDevices()
+.then(function(devices) {
+  devices.forEach(function(device) {
+    console.log(device.kind + ": " + device.label +
+                " id = " + device.deviceId);
+  });
+})
+.catch(function(err) {
+  console.log(err.name + ": " + err.message);
+});
 function onMediaSuccess(stream) {
 	console.log("I have created stream");
     window.streamReference = stream;
@@ -29,7 +48,7 @@ function onMediaSuccess(stream) {
 			console.log('Stream ended');
 			window.stream = stream; // make variable available to browser console
 			//audio.srcObject = stream;
-            mediaRecorder.stop();
+            //mediaRecorder.stop();
 
 		};
 		stream.onend= function(){
@@ -73,13 +92,29 @@ $(function() {
 
     $(".play").on("click", function() {
 		console.log("I clicked on play");
-        navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+		if (navigator.mediaDevices.getUserMedia == undefined) {
+			console.log("I am modern browser");
+		  navigator.mediaDevices.getUserMedia = function(constraints) {
+
+			// First get ahold of the legacy getUserMedia, if present
+			var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+			// Some browsers just don't implement it - return a rejected promise with an error
+			// to keep a consistent interface
+			if (!getUserMedia) {
+			  return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+			}
+
+			// Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
+		};
+		 
+		}
+				navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
+
 		console.log(" I am trtying to update the result");
         contadorIncremento();
-		$("#recorder").click()
-		console.log("finally I clicked the recorder");
-
     });
+	
 
     $(".stop").on("click", function() {
 		console.log("I am trying to stop");
