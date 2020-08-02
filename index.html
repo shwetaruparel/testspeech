@@ -5,73 +5,16 @@
     <meta charset="utf-8"/>
     <meta name="description" content=""/>
     <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="./more.js"></script>
 <body>
-<audio id="player" controls></audio>
-<button id="speak" onclick="checkspeak()">Speak</button>
-<button id="stop">Stop</button>
-
-<script>
-
-const player = document.getElementById('player');
-
-function checkspeak()
-{
-	console.log("I am in the function");
-	var shouldStop = false;
-	var stopped = false;
-	const stopButton = document.getElementById('stop');
-
-	  stopButton.addEventListener('click', function() {
-		shouldStop = true;
-	  });
-  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-      .then(function(stream) {
-		
-		const options = {mimeType: 'audio/webm'};
-		const recordedChunks = [];
-		const mediaRecorder = new MediaRecorder(stream, options);
-
-		if (window.URL) {
-		  player.srcObject = stream;
-		} else {
-		  player.src = stream;
-		}
-		mediaRecorder.addEventListener('dataavailable', function(e) {
-		if (e.data.size > 0) {
-			recordedChunks.push(e.data);
-		}
-
-      if(shouldStop === true && stopped === false) {
-        mediaRecorder.stop();
-        stopped = true;
-      }
-		});
-
-    mediaRecorder.addEventListener('stop', function() {
-      downloadLink.href = URL.createObjectURL(new Blob(recordedChunks));
-      downloadLink.download = 'acetest.wav';
-	  return;
-    });
-    mediaRecorder.start();
-
-	navigator.permissions.query({name:'microphone'}).then(function(result) {
-	  if (result.state == 'granted') {
-			console.log("I have granted");
-	  } else if (result.state == 'prompt') {
-			console.log("I have prompted");
-	  } else if (result.state == 'denied') {
-			console.log("I have denied");
-	  }
-	  result.onchange = function() {
-
-	  };
-	});
-
-  });
-}
-</script>
-</body>
+<div id="result"></div> 
+<input type="file" hidden accept="audio/*" capture>
+<button class="play">Start</button>
+<button class="stop">Stop</button>
+<button class="resume">Resume</button>
+<button class="salvar">Salvar</button>
+  
+ <div class="contador"></div>
+ </body>
 </html>
-
