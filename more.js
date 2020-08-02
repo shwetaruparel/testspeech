@@ -10,15 +10,8 @@ var mediaRecorder;
 var blobURL;
 
 const recorder = document.getElementById('recorder');
-const player = document.getElementById('player');
+//const player = document.getElementById('player');
 
-  $("#recorder").onchange= function(e) {
-    const file = e.target.files[0];
-    const url = URL.createObjectURL(file);
-    // Do something with the audio file.
-	console.log("Something has changed");
- player.src = url;
-  };
 function onMediaSuccess(stream) {
 	console.log("I have created stream");
     window.streamReference = stream;
