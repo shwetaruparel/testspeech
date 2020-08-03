@@ -3,10 +3,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-	<meta charset="utf-8">
     <meta name="description" content="WebRTC Javascript code samples">
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-    <meta name="mobile-web-app-capable" content="yes">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 
@@ -90,6 +88,7 @@ function onMediaError(e) {
         startRecordingButton.addEventListener("click", function () {
             // Initialize recorder
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+			navigator.mediaDevices.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
 			navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
 
        });
@@ -152,6 +151,7 @@ function onMediaError(e) {
 
             // our final blob
             blob = new Blob([view], { type: 'audio/wav' });
+			
         });
 
         playButton.addEventListener("click", function () {
@@ -161,7 +161,9 @@ function onMediaError(e) {
 
             var url = window.URL.createObjectURL(blob);
             var audio = new Audio(url);
-            audio.play();
+            console.log("The new url is created :" +url);
+
+			audio.play();
         });
 
         downloadButton.addEventListener("click", function () {
