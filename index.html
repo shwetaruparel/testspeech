@@ -45,6 +45,9 @@ function onMediaSuccess(stream) {
 	// creates the audio context
 
 	// creates an audio node from the microphone incoming stream
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	console.log("I used Audio Context"+window.AudioContext);
+	context = new AudioContext();
 	mediaStream = context.createMediaStreamSource(stream);
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createScriptProcessor
@@ -82,8 +85,6 @@ var blobURL;
 alert('Your browser version is reported as ' + navigator.appVersion);
 //const player = document.getElementById('player');
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
-context = new AudioContext();
 
 startRecordingButton.addEventListener("click", function () {
 	// Initialize recorder
