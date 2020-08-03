@@ -2,16 +2,26 @@ var mediaConstraints = {
     audio: true,
 	video:false
 };
-var synth = window.speechSynthesis;
-var utterThis = new SpeechSynthesisUtterance();
-var voices = speechSynthesis.getVoices();	
 
 var mediaRecorder;
 var blobURL;
 alert('Your browser version is reported as ' + navigator.appVersion);
-const recorder = document.getElementById('recorder');
 //const player = document.getElementById('player');
-if (navigator.mediaDevices === undefined) {
+
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+if (audioCtx.createJavaScriptNode) {
+	console.log("I am trying to use Webaudio");
+    audioNode = audioCtx.createJavaScriptNode(1024, 1, 1);
+} else if (audioCtx.createScriptProcessor) {
+    console.log("I got something atleast");
+	audioNode = audioCtx.createScriptProcessor(1024, 1, 1);
+} else {
+    throw 'WebAudio not supported!';
+}
+audioNode.connect(audioCtx.destination);
+
+
+if (navigator.mediaDevices == undefined) {
 	console.log("seems to be new browser");
   navigator.mediaDevices = {};
 }
@@ -20,7 +30,6 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
 }
 
 // List cameras and microphones.
-
 navigator.mediaDevices.enumerateDevices()
 .then(function(devices) {
   devices.forEach(function(device) {
@@ -109,7 +118,7 @@ $(function() {
 		};
 		 
 		}
-				navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
+		navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
 
 		console.log(" I am trtying to update the result");
         contadorIncremento();
