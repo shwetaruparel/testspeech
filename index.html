@@ -89,7 +89,7 @@ function onMediaError(e) {
             // Initialize recorder
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 			navigator.mediaDevices.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-			navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
+			//navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);	
 
        });
 
