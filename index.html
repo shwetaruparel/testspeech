@@ -91,6 +91,8 @@ alert('Your browser version is reported as ' + navigator.appVersion);
 
 startRecordingButton.addEventListener("click", function () {
 	// Initialize recorder
+	console.log(" I got some media Device "+navigator.mediaDevices.enumerateDevices());
+	console.log(" I got some media Device "+navigator.mediaDevices.getUserMedia);
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia;
 	console.log(" I got some media Device "+navigator.mediaDevices.enumerateDevices());
 	if(navigator.getUserMedia == 'undefined')
