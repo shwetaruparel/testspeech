@@ -13,8 +13,6 @@
 </head>
 <body>
     <h1>Audio</h1>
-
-	<input type="file" accept="audio/*;capture=microphone"></input>
     <button id="startRecordingButton">Start recording</button>
     <button id="stopRecordingButton">Stop recording</button>
     <button id="playButton">Play</button>
@@ -91,13 +89,13 @@ alert('Your browser version is reported as ' + navigator.appVersion);
 
 startRecordingButton.addEventListener("click", function () {
 	// Initialize recorder
-	console.log(" I got some media Device "+navigator.mediaDevices.enumerateDevices());
-	console.log(" I got some media Device "+navigator.mediaDevices.getUserMedia);
-	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia;
-	console.log(" I got some media Device "+navigator.mediaDevices.enumerateDevices());
+	console.log(" I got some media Device ");
+	console.log(" I got some media Device ");
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia ;
+	console.log(" I got some media Device "+navigator.mediaCapabilities);
 	if(navigator.getUserMedia == 'undefined')
 	{	
-		const myPromise = navigator.mediaDevices.getUserMedia(mediaConstraints).then(onMediaSuccess,onMediaError)
+			const myPromise = navigator.mediaDevices.getUserMedia(mediaConstraints).then(onMediaSuccess,onMediaError)
 	}
 	else
 		navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
@@ -226,11 +224,8 @@ function writeUTFBytes(view, offset, string) {
 	}
 }
 
-    </script>
+</script>
+
 </body>
-	<iframe src="https://shwetaruparel.github.io/testspeech/"
-       title="Open identification process"
-       frameBorder="0"
-       allow="microphone"></iframe>
 
 </html>
